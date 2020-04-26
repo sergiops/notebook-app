@@ -24,6 +24,14 @@ export default {
       return marked(this.content)
     }
   },
+  watch: {
+    content(val) {
+      localStorage.setItem("content", val)
+    }
+  },
+  created() {
+    this.content = localStorage.getItem("content") || " "
+  },
   data () {
     return {
       content: ""
