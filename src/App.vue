@@ -1,17 +1,33 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h1>Notebook</h1>
+
+    <!-- Main pane --> 
+    <section class="main">
+      <textarea placeholder="Write here" v-model="content"></textarea>
+    </section>
+
+    <!-- Preview pane -->
+    <aside class="preview" v-html="notePreview">
+    </aside>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import marked from "marked"
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  computed: {
+    notePreview () {
+      return marked(this.content)
+    }
+  },
+  data () {
+    return {
+      content: ""
+    }
   }
 }
 </script>
@@ -24,5 +40,13 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.main {
+  background-color: #eee;
+}
+
+.preview {
+  background-color: #ddd;
 }
 </style>
