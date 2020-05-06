@@ -56,6 +56,18 @@ export default {
     },
     selectNote(note) {
       this.selectedId = note.id
+    },
+    saveNotes() {
+      localStorage.setItem("notes", JSON.stringify(this.notes))
+    }
+  },
+  watch: {
+    notes: {
+      handler: "saveNotes",
+      deep: true
+    },
+    selectedId(val) {
+      localStorage.setItem("selected-id", val)
     }
   },
   computed: {
@@ -66,13 +78,10 @@ export default {
       return this.notes.find(note => note.id == this.selectedId)
     }
   },
-  mounted() {
-    //this.addNote()
-  },
   data () {
     return {
-      notes: [],
-      selectedId: null
+      notes: JSON.parse(localStorage.getItem("notes")) || [],
+      selectedId: localStorage.getItem("selected-id") || null
     }
   }
 }
