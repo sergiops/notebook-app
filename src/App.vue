@@ -11,24 +11,27 @@
       <div>
         <div class="nav-note" 
         v-for="note of notes" :key="note.id"
-        @click="selectNote(note)">
+        @click="selectNote(note)"
+        :class="{selected: note == selectedNote}">
           {{note.title}}
         </div>
       </div>
     </nav>
   
-    <section id="note-content" class="row no-gutters">
-      <div class="col-6">
-        <!-- Text input pane --> 
-        <section class="textarea-wrapper">
-          <textarea placeholder="Write here" v-model="selectedNote.content"></textarea>
-        </section>
-      </div>
-      <div class="col-6 preview-bg">
-        <!-- Preview pane -->
-        <section class="preview" v-html="notePreview"></section>
-      </div>
-    </section>
+    <template v-if="selectedNote">
+      <section id="note-content" class="row no-gutters">
+        <div class="col-6">
+          <!-- Text input pane --> 
+          <section class="textarea-wrapper">
+            <textarea placeholder="Write here" v-model="selectedNote.content"></textarea>
+          </section>
+        </div>
+        <div class="col-6 preview-bg">
+          <!-- Preview pane -->
+          <section class="preview" v-html="notePreview"></section>
+        </div>
+      </section>
+    </template>
 
   </div>
 </template>
@@ -64,7 +67,7 @@ export default {
     }
   },
   mounted() {
-    this.addNote()
+    //this.addNote()
   },
   data () {
     return {
@@ -90,6 +93,7 @@ export default {
   left: 0;
   right: 0;
   overflow-y: scroll;
+  border-right: 1px solid lightgrey;
 }
 
 .nav-action {
@@ -101,9 +105,10 @@ export default {
   padding-bottom: 20px;
   padding-left: 20px;
   border-bottom: 1px solid rgba(0,0,0,.1);
+  cursor: pointer;
 }
 
-.nav-note:hover {
+.selected {
   background-color: lightgrey;
 }
 
@@ -126,7 +131,6 @@ export default {
   width: 100%;
   height: 100%;
   border-right: 1px solid lightgrey;
-  border-left: 1px solid lightgrey;
 }
 
 textarea {
