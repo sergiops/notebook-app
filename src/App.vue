@@ -9,7 +9,9 @@
       </div>
       <hr class="nav-divider"/>
       <div>
-        <div class="nav-note" v-for="note of notes" :key="note.id">
+        <div class="nav-note" 
+        v-for="note of notes" :key="note.id"
+        @click="selectNote(note)">
           {{note.title}}
         </div>
       </div>
@@ -19,7 +21,7 @@
       <div class="col-6">
         <!-- Text input pane --> 
         <section class="textarea-wrapper">
-          <textarea placeholder="Write here" v-model="content"></textarea>
+          <textarea placeholder="Write here" v-model="selectedNote.content"></textarea>
         </section>
       </div>
       <div class="col-6 preview-bg">
@@ -42,30 +44,32 @@ export default {
       const note = {
         id: String(time),
         title: "New Note",
-        content: "**Hi!**",
+        content: "",
         created: time,
         favorite: false
       }
       this.notes.push(note)
+      this.selectedId = note.id
+    },
+    selectNote(note) {
+      this.selectedId = note.id
     }
   },
   computed: {
     notePreview () {
-      return marked(this.content)
+      return this.selectedNote ? marked(this.selectedNote.content) : ""
+    },
+    selectedNote() {
+      return this.notes.find(note => note.id == this.selectedId)
     }
   },
-  watch: {
-    content(val) {
-      localStorage.setItem("content", val)
-    }
-  },
-  created() {
-    this.content = localStorage.getItem("content") || ""
+  mounted() {
+    this.addNote()
   },
   data () {
     return {
-      content: "",
-      notes: []
+      notes: [],
+      selectedId: null
     }
   }
 }
