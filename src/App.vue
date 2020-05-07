@@ -15,13 +15,15 @@
 
     <nav id="toolbar">
       <div class="row align-items-center">
-        <div class="col-6">
-          <div class="btn-edit btn-gutter" @click="addNote"></div>
-          <div class="btn-delete btn-gutter" @click="removeNote"></div>
+        <div class="btn-bg btn-gutter" @click="addNote">
+          <svg class="btn-edit"></svg>
         </div>
-        <div class="col-6 text-right">
-          <h3>Notebook</h3>
+
+        <div class="btn-bg btn-gutter" @click="removeNote">
+          <svg class="btn-delete"></svg>
         </div>
+      
+        <h3 id="app-name">Notebook</h3>
       </div>
     </nav>
   
@@ -146,33 +148,42 @@ export default {
 
 #toolbar {
   margin-left: 200px;
-  padding: 10px;
+  padding: 8px 10px 8px 10px;
   border-bottom: 1px solid lightgrey;
 }
 
-#toolbar h3 {
+#app-name {
+  margin-right: 10px;
+  margin-left: auto;
+  margin-bottom: 0;
+}
+
+#toolbar .row {
   margin: 0;
 }
 
+.btn-bg {
+  background-color: lightgray;
+  border-radius: 4px;
+  padding: 4px;
+  cursor: pointer;
+  width: 40px;
+  text-align: center;
+}
+
 .btn-gutter {
-  margin-right: 10px;
+  margin-right: 8px;
 }
 
 .btn-edit {
-  display: inline-block;
-  cursor: pointer;
-  border: 1px solid lightgrey;
-  height: 36px;
-  width: 36px;
+  height: 20px;
+  width: 20px;
   background-image: url("./assets/edit.svg");
 }
 
 .btn-delete {
-  display: inline-block;
-  cursor: pointer;
-  border: 1px solid lightgrey;
-  height: 36px;
-  width: 36px;
+  height: 20px;
+  width: 20px;
   background-image: url("./assets/trash.svg");
 }
 
