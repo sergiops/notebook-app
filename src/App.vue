@@ -3,17 +3,24 @@
   <!-- Main app -->
 
     <nav id="nav-bar">
-      <div class="nav-action text-center">
-        <h3>Notebook</h3>
-        <button @click="addNote">Add Note</button>
-      </div>
-      <hr class="nav-divider"/>
       <div>
         <div class="nav-note" 
         v-for="note of notes" :key="note.id"
         @click="selectNote(note)"
         :class="{selected: note == selectedNote}">
           {{note.title}}
+        </div>
+      </div>
+    </nav>
+
+    <nav id="toolbar">
+      <div class="row align-items-center">
+        <div class="col-6">
+          <div class="btn-edit btn-gutter" @click="addNote"></div>
+          <div class="btn-delete btn-gutter" @click="removeNote"></div>
+        </div>
+        <div class="col-6 text-right">
+          <h3>Notebook</h3>
         </div>
       </div>
     </nav>
@@ -54,6 +61,14 @@ export default {
       this.notes.push(note)
       this.selectedId = note.id
     },
+    removeNote() {
+      if (this.selectedNote) {
+        const index = this.notes.indexOf(this.selectedNote)
+        if (index !== -1) {
+          this.notes.splice(index, 1)
+        }
+      }
+    },
     selectNote(note) {
       this.selectedId = note.id
     },
@@ -89,7 +104,6 @@ export default {
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
@@ -101,6 +115,7 @@ export default {
   height: 100vh;
   left: 0;
   right: 0;
+  top: 0;
   overflow-y: scroll;
   border-right: 1px solid lightgrey;
 }
@@ -127,6 +142,38 @@ export default {
   margin-top: 12px;
   margin-bottom: 0px;
   border-bottom: 1px solid rgba(0,0,0,.1);
+}
+
+#toolbar {
+  margin-left: 200px;
+  padding: 10px;
+  border-bottom: 1px solid lightgrey;
+}
+
+#toolbar h3 {
+  margin: 0;
+}
+
+.btn-gutter {
+  margin-right: 10px;
+}
+
+.btn-edit {
+  display: inline-block;
+  cursor: pointer;
+  border: 1px solid lightgrey;
+  height: 36px;
+  width: 36px;
+  background-image: url("./assets/edit.svg");
+}
+
+.btn-delete {
+  display: inline-block;
+  cursor: pointer;
+  border: 1px solid lightgrey;
+  height: 36px;
+  width: 36px;
+  background-image: url("./assets/trash.svg");
 }
 
 #note-content {
