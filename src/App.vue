@@ -9,6 +9,9 @@
         @click="selectNote(note)"
         :class="{selected: note == selectedNote}">
           {{note.title}}
+          <div class="note-date">
+            {{getDate2(note)}}
+          </div>
         </div>
       </div>
     </nav>
@@ -35,6 +38,9 @@
             <div class="col-6">
               <!-- Text input pane -->
               <section class="textarea-wrapper">
+                <div class="datetime text-center">
+                  {{this.datetime}}
+                </div>
                 <textarea placeholder="Write here" v-model="selectedNote.content"></textarea>
               </section>
             </div>
@@ -89,6 +95,11 @@ export default {
     selectNote(note) {
       this.selectedId = note.id
     },
+    getDate2(note) {
+      const dt = new Date()
+      dt.setTime(note.created)
+      return dt.getMonth() + "/" + dt.getDate() + "/" + dt.getFullYear()
+    },
     saveNotes() {
       localStorage.setItem("notes", JSON.stringify(this.notes))
     }
@@ -112,7 +123,7 @@ export default {
     datetime() {
       const dt = new Date()
       dt.setTime(this.selectedNote.created)
-      const date = monthNames[dt.getMonth()] + " " + dt.getDate() + " " + dt.getFullYear()
+      const date = monthNames[dt.getMonth()] + " " + dt.getDate() + ", " + dt.getFullYear()
       
       let time = ""
       const hours = dt.getHours()
@@ -175,9 +186,13 @@ export default {
 }
 
 .nav-note {
-  padding: 20px;
+  padding: 12px 20px 12px 20px;
   border-bottom: 1px solid rgba(0,0,0,.1);
   cursor: pointer;
+}
+
+.note-date {
+  font-size: 13px;
 }
 
 .selected {
@@ -233,20 +248,23 @@ export default {
 }
 
 .datetime {
-  font-size: 14px;
+  font-size: 13px;
   color: gray;
   padding-top: 4px;
-  padding-bottom: 4px;
+  padding-bottom: 10px;
 }
 
 .textarea-wrapper {
   height: 100%;
+  width: 100%;
   border-right: 1px solid lightgrey;
+  display: flex;
+  flex-flow: column;
 }
 
 textarea {
-  padding: 15px 15px 15px 15px;
-  height: 100%;
+  padding: 5px 15px 15px 15px;
+  flex-grow: 1;
   width: 100%;
   border: none;
   resize: none !important;
