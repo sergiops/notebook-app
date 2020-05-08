@@ -168,7 +168,6 @@ export default {
 
 #note-content {
   flex-grow: 1;
-  overflow-y: scroll;
 }
 
 .nav-action {
@@ -256,6 +255,8 @@ textarea {
 
 .preview {
   padding: 15px 15px 15px 15px;
+  position: absolute;
   height: 100%;
+  overflow-y: scroll;
 }
 </style>
