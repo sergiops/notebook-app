@@ -13,40 +13,50 @@
       </div>
     </nav>
 
-    <nav id="toolbar">
-      <div class="row align-items-center">
-        <div class="btn-bg btn-gutter" @click="addNote">
-          <svg class="btn-edit"></svg>
-        </div>
+    <section id="note">
 
-        <div class="btn-bg btn-gutter" @click="removeNote">
-          <svg class="btn-delete"></svg>
-        </div>
+      <nav id="toolbar">
+        <div class="row align-items-center">
+          <div class="btn-bg btn-gutter" title="Create a note" @click="addNote">
+            <svg class="btn-edit"></svg>
+          </div>
+
+          <div class="btn-bg btn-gutter" title="Delete" @click="removeNote">
+            <svg class="btn-delete"></svg>
+          </div>
       
-        <h3 id="app-name">Notebook</h3>
-      </div>
-    </nav>
-  
-    <template v-if="selectedNote">
-      <section id="note-content" class="row no-gutters">
-        <div class="col-6">
-          <!-- Text input pane --> 
-          <section class="textarea-wrapper">
-            <textarea placeholder="Write here" v-model="selectedNote.content"></textarea>
-          </section>
+          <h3 id="app-name">Notebook</h3>
         </div>
-        <div class="col-6 preview-bg">
-          <!-- Preview pane -->
-          <section class="preview" v-html="notePreview"></section>
-        </div>
-      </section>
-    </template>
+      </nav>
 
+      <template v-if="selectedNote">
+        <section id="note-content">
+          <div class="row no-gutters">
+            <div class="col-6">
+              <!-- Text input pane -->
+              <section class="textarea-wrapper">
+                <textarea placeholder="Write here" v-model="selectedNote.content"></textarea>
+              </section>
+            </div>
+            <div class="col-6">
+              <!-- Preview pane -->
+              <section class="preview" v-html="notePreview"></section>
+            </div>
+          </div>
+          
+        </section>
+      </template>
+
+    </section>
+   
   </div>
 </template>
 
 <script>
 import marked from "marked"
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+]
 
 export default {
   name: 'App',
@@ -60,7 +70,7 @@ export default {
         created: time,
         favorite: false
       }
-      this.notes.push(note)
+      this.notes.unshift(note)
       this.selectedId = note.id
     },
     removeNote() {
@@ -68,6 +78,11 @@ export default {
         const index = this.notes.indexOf(this.selectedNote)
         if (index !== -1) {
           this.notes.splice(index, 1)
+          if (index < this.notes.length) {
+            this.selectNote(this.notes[index])
+          } else if (this.notes.length > 0) {
+            this.selectNote(this.notes[index-1])
+          }
         }
       }
     },
@@ -93,6 +108,25 @@ export default {
     },
     selectedNote() {
       return this.notes.find(note => note.id == this.selectedId)
+    },
+    datetime() {
+      const dt = new Date()
+      dt.setTime(this.selectedNote.created)
+      const date = monthNames[dt.getMonth()] + " " + dt.getDate() + " " + dt.getFullYear()
+      
+      let time = ""
+      const hours = dt.getHours()
+      let minutes = dt.getMinutes()
+      if (minutes < 10) {
+        minutes = "0" + minutes
+      }
+
+      if (dt.getHours() > 12) {
+        time = hours-12 + ":" + minutes + " PM"
+      } else {
+        time = hours + ":" + minutes + " AM"
+      }
+      return date + " at " + time
     }
   },
   data () {
@@ -106,6 +140,7 @@ export default {
 
 <style>
 #app {
+  height: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
@@ -113,13 +148,27 @@ export default {
 
 #nav-bar {
   position: fixed;
-  width: 200px;
   height: 100vh;
-  left: 0;
-  right: 0;
-  top: 0;
+  width: 200px;
   overflow-y: scroll;
   border-right: 1px solid lightgrey;
+}
+
+#note {
+  margin-left: 200px;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+#toolbar {
+  padding: 8px 10px 8px 10px;
+  border-bottom: 1px solid lightgrey;
+}
+
+#note-content {
+  flex-grow: 1;
+  overflow-y: scroll;
 }
 
 .nav-action {
@@ -127,9 +176,7 @@ export default {
 }
 
 .nav-note {
-  padding-top: 20px;
-  padding-bottom: 20px;
-  padding-left: 20px;
+  padding: 20px;
   border-bottom: 1px solid rgba(0,0,0,.1);
   cursor: pointer;
 }
@@ -146,16 +193,11 @@ export default {
   border-bottom: 1px solid rgba(0,0,0,.1);
 }
 
-#toolbar {
-  margin-left: 200px;
-  padding: 8px 10px 8px 10px;
-  border-bottom: 1px solid lightgrey;
-}
-
 #app-name {
   margin-right: 10px;
   margin-left: auto;
   margin-bottom: 0;
+  user-select: none;
 }
 
 #toolbar .row {
@@ -187,21 +229,24 @@ export default {
   background-image: url("./assets/trash.svg");
 }
 
-#note-content {
-  position: relative;
-  height: 100vh;
-  margin-left: 200px;
-  overflow-y: scroll;
+#note-content .row {
+  height: 100%;
+}
+
+.datetime {
+  font-size: 14px;
+  color: gray;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 .textarea-wrapper {
-  width: 100%;
   height: 100%;
   border-right: 1px solid lightgrey;
 }
 
 textarea {
-  padding: 20px;
+  padding: 15px 15px 15px 15px;
   height: 100%;
   width: 100%;
   border: none;
@@ -209,14 +254,8 @@ textarea {
   outline: none;
 }
 
-.preview-bg {
-  background-color: #ddd;
-}
-
 .preview {
-  padding: 20px;
-  height: 100vh;
-  position: relative;
-  overflow-y: scroll;
+  padding: 15px 15px 15px 15px;
+  height: 100%;
 }
 </style>
