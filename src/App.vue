@@ -41,6 +41,9 @@
                 <div class="datetime text-center">
                   {{this.datetime}}
                 </div>
+                <div class="note-title">
+                  <input placeholder="Title" v-model="selectedNote.title">
+                </div>
                 <textarea placeholder="Write here" v-model="selectedNote.content"></textarea>
               </section>
             </div>
@@ -154,19 +157,18 @@ export default {
   height: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
 }
 
 #nav-bar {
   position: fixed;
   height: 100vh;
-  width: 200px;
+  width: 225px;
   overflow-y: scroll;
   border-right: 1px solid lightgrey;
 }
 
 #note {
-  margin-left: 200px;
+  margin-left: 225px;
   display: flex;
   flex-flow: column;
   height: 100%;
@@ -189,6 +191,9 @@ export default {
   padding: 12px 20px 12px 20px;
   border-bottom: 1px solid rgba(0,0,0,.1);
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .note-date {
@@ -250,8 +255,20 @@ export default {
 .datetime {
   font-size: 13px;
   color: gray;
-  padding-top: 4px;
-  padding-bottom: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+#note-content .note-title {
+  padding: 0 15px 0 15px;
+}
+
+.note-title input {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid lightgray;
+  outline: none;
+  height: 40px;
 }
 
 .textarea-wrapper {
@@ -263,7 +280,7 @@ export default {
 }
 
 textarea {
-  padding: 5px 15px 15px 15px;
+  padding: 10px 15px 15px 15px;
   flex-grow: 1;
   width: 100%;
   border: none;
