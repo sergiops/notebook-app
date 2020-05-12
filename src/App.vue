@@ -159,6 +159,10 @@ export default {
   -moz-osx-font-smoothing: grayscale;
 }
 
+* {
+  background-color: #fafafa;
+}
+
 #nav-bar {
   position: fixed;
   height: 100vh;
@@ -199,6 +203,7 @@ export default {
 
 .note-date {
   font-size: 13px;
+  background-color: inherit;
 }
 
 .selected {
@@ -238,12 +243,14 @@ export default {
 }
 
 .btn-edit {
+  background-color: inherit;
   height: 20px;
   width: 20px;
   background-image: url("./assets/edit.svg");
 }
 
 .btn-delete {
+  background-color: inherit;
   height: 20px;
   width: 20px;
   background-image: url("./assets/trash.svg");
