@@ -135,7 +135,9 @@ export default {
         minutes = "0" + minutes
       }
 
-      if (dt.getHours() > 12) {
+      if (hours === 0) {
+        time = 12 + ":" + minutes + " AM"
+      } else if (hours > 12) {
         time = hours-12 + ":" + minutes + " PM"
       } else {
         time = hours + ":" + minutes + " AM"
