@@ -3,9 +3,10 @@
   <!-- Main app -->
 
     <nav id="nav-bar">
-      <div>
-        <div class="nav-note" 
-        v-for="note of notes" :key="note.id"
+      <div id="pinned" v-if="sortedPinnedNotes.length > 0">
+        <div class="pin-label">Pinned</div>
+        <div class="nav-note"
+        v-for="note of sortedPinnedNotes" :key="note.id"
         @click="selectNote(note)"
         :class="{selected: note == selectedNote}">
           {{note.title}}
@@ -13,23 +14,39 @@
             {{getDate2(note)}}
           </div>
         </div>
+        <hr class="seperator">
+      </div>
+
+      <div class="nav-note" 
+      v-for="note of sortedNotes" :key="note.id"
+      @click="selectNote(note)"
+      :class="{selected: note == selectedNote}">
+        {{note.title}}
+        <div class="note-date">
+          {{getDate2(note)}}
+        </div>
       </div>
     </nav>
 
     <section id="note">
 
       <nav id="toolbar">
-        <div class="row align-items-center">
-          <div class="btn-bg btn-gutter" title="Create a note" @click="addNote">
+        <span class="row align-items-center">
+          <span class="btn-bg btn-gutter" title="Create a note" @click="addNote">
             <svg class="btn-edit"></svg>
-          </div>
+          </span>
 
-          <div class="btn-bg btn-gutter" title="Delete" @click="removeNote">
+          <span class="btn-bg btn-gutter" title="Delete" @click="removeNote">
             <svg class="btn-delete"></svg>
-          </div>
+          </span>
+
+          <span class="btn-bg" @click="pinNote" 
+          :title="selectedNote.favorite ? 'Unpin Note' : 'Pin Note'">
+            <svg :class="{pin: selectedNote.favorite, 'pin-outline': selectedNote.favorite === 0 }"></svg>
+          </span>
       
           <h3 id="app-name">Notebook</h3>
-        </div>
+        </span>
       </nav>
 
       <template v-if="selectedNote">
@@ -77,7 +94,7 @@ export default {
         title: "New Note",
         content: "",
         created: time,
-        favorite: false
+        favorite: 0
       }
       this.notes.unshift(note)
       this.selectedId = note.id
@@ -94,6 +111,9 @@ export default {
           }
         }
       }
+    },
+    pinNote() {
+      this.selectedNote.favorite ^= true
     },
     selectNote(note) {
       this.selectedId = note.id
@@ -117,6 +137,16 @@ export default {
     }
   },
   computed: {
+    sortedNotes() {
+      return this.notes.slice()
+        .filter(a => a.favorite === 0)
+        .sort((a,b) => b.created - a.created)
+    },
+    sortedPinnedNotes() {
+      return this.notes.slice()
+        .filter(a => a.favorite)
+        .sort((a,b) => b.created - a.created)
+    },
     notePreview () {
       return this.selectedNote ? marked(this.selectedNote.content) : ""
     },
@@ -168,13 +198,13 @@ export default {
 #nav-bar {
   position: fixed;
   height: 100vh;
-  width: 225px;
+  width: 240px;
   overflow-y: scroll;
   border-right: 1px solid lightgrey;
 }
 
 #note {
-  margin-left: 225px;
+  margin-left: 240px;
   display: flex;
   flex-flow: column;
   height: 100%;
@@ -195,7 +225,9 @@ export default {
 
 .nav-note {
   padding: 12px 20px 12px 20px;
-  border-bottom: 1px solid rgba(0,0,0,.1);
+  border-bottom: 1px solid lightgray;
+  font-weight: bold;
+  font-size: 14px;
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
@@ -206,18 +238,11 @@ export default {
 .note-date {
   font-size: 13px;
   background-color: inherit;
+  font-weight: normal;
 }
 
 .selected {
   background-color: lightgrey;
-}
-
-.nav-divider {
-  padding: 0;
-  border: none;
-  margin-top: 12px;
-  margin-bottom: 0px;
-  border-bottom: 1px solid rgba(0,0,0,.1);
 }
 
 #app-name {
@@ -256,6 +281,33 @@ export default {
   height: 20px;
   width: 20px;
   background-image: url("./assets/trash.svg");
+}
+
+.pin {
+  background-color: inherit;
+  height: 20px;
+  width: 20px;
+  background-image: url("./assets/pin.svg");
+}
+
+.pin-outline {
+  background-color: inherit;
+  height: 20px;
+  width: 20px;
+  background-image: url("./assets/pin-outline.svg");
+}
+
+.pin-label {
+  background-color: #EAEAEA;
+  width: 100%;
+  padding: 3px 15px 3px 15px;
+  font-size: 13px;
+}
+
+.seperator {
+  border: 0;
+  border-bottom: 4px solid #EAEAEA;
+  margin: 0;
 }
 
 #note-content .row {
